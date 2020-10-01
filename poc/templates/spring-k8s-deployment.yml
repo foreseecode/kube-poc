@@ -30,7 +30,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        image: fsr-artifactory.aws.foreseeresults.com:9001/hello-spring-k8s-{{ index .Values.image.tag "spring-k8s" }}:latest
+              #        image: fsr-artifactory.aws.foreseeresults.com:9001/hello-spring-k8s-{{ index .Values.image.tag "spring-k8s" }}:latest
+        image: fsr-artifactory.aws.foreseeresults.com:9001/spring-k8s:{{ index .Values.image.version "spring-k8s" }}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
