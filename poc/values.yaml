@@ -2,4 +2,4 @@
 replicaCount: 1
 image:
   tag:
-    spring-k8s: "snapshot-200922-182026-7700"
+    spring-k8s:"snapshot-201002-145713-0133"
