@@ -1,5 +1,5 @@
 ---
 replicaCount: 1
 image:
-  tag:
+  version:
     spring-k8s: "snapshot-201002-145713-0133"
