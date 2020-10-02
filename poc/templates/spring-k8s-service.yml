@@ -7,7 +7,6 @@ metadata:
     prometheus.io/port: "9779"
     prometheus.io/scrape: "true"
   name: spring-k8s
-  namespace: poc
 spec:
   ports:
   - name: http

@@ -6,7 +6,6 @@ metadata:
     testProject: spring-boot-sample
     app: spring-k8s
   name: spring-k8s
-  namespace: poc
 spec:
   replicas: 1
   revisionHistoryLimit: 2
@@ -18,7 +17,6 @@ spec:
       labels:
         testProject: spring-boot-sample
         app: spring-k8s
-      namespace: poc
     spec:
       containers:
       - env:
