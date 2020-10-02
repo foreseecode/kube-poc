@@ -68,6 +68,16 @@
 
 						<configuration>
 							<namespace>test-ns</namespace>
+							<images>
+								<image>
+									<name>fsr-artifactory.aws.foreseeresults.com:9001/${project.artifactId}:%t</name>
+									<alias>hello-world</alias>
+									<build>
+										<from>openjdk:8</from>
+										<cmd>java -jar maven/${project.artifactId}-${project.version}.jar</cmd>
+									</build>
+								</image>
+							</images>
 							<resources>
 								<labels>
 									<all>
