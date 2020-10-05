@@ -2,4 +2,4 @@
 replicaCount: 1
 image:
   version:
-    spring-k8s: "snapshot-[0-9-]*"$
+    spring-k8s: "snapshot-201002-174827-0108"
