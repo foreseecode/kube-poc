@@ -11,7 +11,7 @@ def value = args[1]
 def file_name = 'values.yaml'
 def obj = new YamlSlurper().parse(new File(file_name))
 
-obj.get("image").get("version").put(pop, value)
+obj.get("image").get("tag").put(pop, value)
 
 def yaml = new YamlBuilder()
 yaml(obj)
