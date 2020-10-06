@@ -1,0 +1,13 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: apps-poc
+spec:
+  rules:
+  - host: internal-a6d62a3bf34fe4ebebaacef89d2b756f-413463512.us-east-1.elb.amazonaws.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: spring-k8s
+          servicePort: 8080
