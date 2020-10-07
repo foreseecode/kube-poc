@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.foresee/name: settings-service
+  name: settings-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.foresee/name: settings-service
+  template:
+    metadata:
+      labels:
+        app.foresee/name: settings-service
+    spec:
+      containers:
+      - name: settings-service
+        image: fsr-artifactory.aws.foreseeresults.com:9001/settings-service:snapshot-201006-150719-0416
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: VAULT_URI
+            value: {{ .Values.global.env.VAULT_URI | quote}}
+        - name: VAULT_ROLE_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.global.env.NAME }}-settings-service
+              key: vault-role
+        - name: VAULT_SECRET_ID
+          valueFrom:
+              secretKeyRef:
+                name: {{ .Values.global.env.NAME }}-settings-service
+                key: vault-secret
+        - name: K8S_INGRESS_LB
+          value: {{ .Values.global.env.K8S_INGRESS_LB }} 
+        - name: JAVA_OPTS
+          value: -Dspring.profiles.active=dev,aws -Deureka.environment=dev -DAPPLICATION_NAME=settings-service {{ .Values.global.env.DEFAULT_JAVA_OPT }}
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
