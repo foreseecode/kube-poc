@@ -3,3 +3,10 @@ replicaCount: 1
 image:
   version:
     spring-k8s: "snapshot-201006-154131-0814"
+
+global:
+  env:
+    NAME: "dev"
+    VAULT_URI: "http://dev-vault.aws.foreseeresults.com:8200"
+    K8S_INGRESS_LB: ""
+    DEFAULT_JAVA_OPT: ""

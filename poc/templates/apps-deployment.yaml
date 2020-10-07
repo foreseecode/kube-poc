@@ -20,7 +20,7 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
         - name: VAULT_URI
-            value: {{ .Values.global.env.VAULT_URI | quote}}
+          value: {{ .Values.global.env.VAULT_URI }}
         - name: VAULT_ROLE_ID
           valueFrom:
             secretKeyRef:
