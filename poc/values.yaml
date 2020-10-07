@@ -3,6 +3,7 @@ replicaCount: 1
 image:
   version:
     spring-k8s: "snapshot-201006-154131-0814"
+    settings-service: "snapshot-201007-155754-0921"
 
 global:
   env:
