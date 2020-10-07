@@ -11,3 +11,7 @@ spec:
         backend:
           serviceName: spring-k8s
           servicePort: 8080
+      - path: /settings-service
+        backend:
+          serviceName: settings-service
+          servicePort: 8080
