@@ -18,7 +18,7 @@ app:
       role: "NTEwYTJjZTctNDU1OC1lNDk2LTBiOTMtNWY5YzFlOGY4OTZm"
       secret: "NjhiOGMxYmItZTZhMC1hZWE2LWIyZTYtODcwNzgwMTY4YzY5"
   event-tracking-service:
-    version: "snapshot-201008-174859-0555"
+    version: "snapshot-201008-181403-0997"
     java-opts: " -Dapp.env=dev"
     secret:
       role: "IA=="
