@@ -26,7 +26,7 @@ app:
     prefix-url: "/event-tracking-service"
     port: 8080
   fcp-publisher:
-    version: "snapshot-201008-175615-0500"
+    version: "snapshot-201008-181206-0266"
     java-opts: " -Dapp.env=dev"
     secret:
       role: "NzUxNDM1MjEtNDk2Mi1mZmVjLWY4MzgtYTNmMjA1YWQzM2Qw"
