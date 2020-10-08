@@ -25,4 +25,9 @@ app:
       secret: "IA=="
     prefix-url: "/event-tracking-service"
     port: 8080
-
+  fcp-publisher:
+    version: "snapshot-201008-175615-0500"
+    java-opts: " -Dapp.env=dev"
+    secret:
+      role: "NzUxNDM1MjEtNDk2Mi1mZmVjLWY4MzgtYTNmMjA1YWQzM2Qw"
+      secret: "MmUxNjAxNTQtYzU4Zi0zODkzLTkzYjItNDJmNWY5ZWU3OTM5"
