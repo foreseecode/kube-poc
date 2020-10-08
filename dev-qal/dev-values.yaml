@@ -12,7 +12,7 @@ global:
 # version has to be first element and space matters for version_replace.sh to work
 app:
   settings-service:
-    version: "snapshot-201007-155754-0921"
+    version: "snapshot-201008-160838-0376"
     java-opts: "-Deureka.environment=dev -DAPPLICATION_NAME=settings-service"
     secret:
       role: "NTEwYTJjZTctNDU1OC1lNDk2LTBiOTMtNWY5YzFlOGY4OTZm"
