@@ -1,0 +1,107 @@
+{{- define "app.deployment" }}
+{{ $appEnv := .Values.global.env }}
+{{ $replicas := .Values.replicaCount }}
+{{- range $key, $value := .Values.app }}
+{{ $appPort := index . "port" | default $appEnv.APP_PORT }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.foresee/name: {{ $key | quote }}
+  name: {{ $key | quote }}
+spec:
+  replicas: {{ $replicas }}
+  selector:
+    matchLabels:
+      app.foresee/name: {{ $key | quote }}
+  template:
+    metadata:
+      labels:
+        app.foresee/name: {{ $key | quote }}
+    spec:
+      containers:
+      - name: {{ $key | quote }}
+        image: fsr-artifactory.aws.foreseeresults.com:9001/{{ $key }}:{{ .version }}
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: VAULT_URI
+          value: {{ $appEnv.VAULT_URI }}
+        - name: VAULT_ROLE_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ $key | quote }}
+              key: role
+        - name: VAULT_SECRET_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ $key | quote }}
+              key: secret
+        - name: K8S_INGRESS_LB
+          value: {{ $appEnv.K8S_INGRESS_LB }}
+        - name: DEFAULT_JAVA_OPTS
+          value: {{ $appEnv.DEFAULT_JAVA_OPT }}
+        - name: JAVA_OPTS
+          valueFrom:
+            configMapKeyRef:
+              name: {{ $key | quote }}
+              key: java-opts
+        ports:
+        - containerPort: {{ $appPort }} 
+          name: http
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $key | quote }}
+spec:
+  ports:
+  - name: http
+    port: {{ $appPort }}
+    protocol: TCP
+    targetPort: {{ $appPort }}
+  selector:
+    app.foresee/name: {{ $key | quote }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ $key | quote }}
+type: Opaque
+data:
+  role: {{ .secret.role }}
+  secret: {{ .secret.secret }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $key }}
+data:
+  java-opts: {{ index . "java-opts" | quote }}
+---
+{{- end }}
+{{- end }}
+
+
+{{- define "app.ingress" }}
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: app-ingress
+spec:
+  rules:
+  - host: {{.Values.global.env.K8S_INGRESS_LB | quote }}
+    http:
+      paths:
+      {{ $APP_PORT := .Values.global.env.APP_PORT }}
+      {{- range $key, $value := .Values.app }}
+      {{- $default_path := print "/" $key }}
+      - path: {{ index . "prefix-url" | default $default_path | quote }}
+        pathType: Prefix
+        backend:
+          serviceName: {{ $key | quote }}
+          servicePort: {{ index . "port" | default $APP_PORT }}
+      {{- end }}
+---
+{{- end }}
