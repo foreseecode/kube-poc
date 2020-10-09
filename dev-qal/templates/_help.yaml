@@ -8,17 +8,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app.keyword: {{ $key | quote }}
+    app.foresee/name: {{ $key | quote }}
   name: {{ $key | quote }}
 spec:
   replicas: {{ $replicas }}
   selector:
     matchLabels:
-      app.keyword: {{ $key | quote }}
+      app.foresee/name: {{ $key | quote }}
   template:
     metadata:
       labels:
-        app.keyword: {{ $key | quote }}
+        app.foresee/name: {{ $key | quote }}
     spec:
       containers:
       - name: {{ $key | quote }}
@@ -65,7 +65,7 @@ spec:
     protocol: TCP
     targetPort: {{ $appPort }}
   selector:
-    app.keyword: {{ $key | quote }}
+    app.foresee/name: {{ $key | quote }}
 
 ---
 {{- end }} {{- /* if .version */ -}}
