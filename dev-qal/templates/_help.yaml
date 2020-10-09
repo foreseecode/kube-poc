@@ -3,6 +3,7 @@
 {{ $replicas := .Values.replicaCount }}
 {{- range $key, $value := .Values.app }}
 {{ $appPort := index . "port" | default $appEnv.APP_PORT | default 8080}}
+{{- if .version }} {{- /* only have deployment section if versions exists */ -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -53,6 +54,7 @@ spec:
           name: http
           protocol: TCP
 ---
+{{- end }} {{- /* if .version */ -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -78,7 +80,7 @@ data:
   secret: {{ .secret.secret }}
 ---
 {{- end }}
-{{- end }}
+{{- end }} {{- /* if .secret */ -}}
 
 ---
 {{- if index . "java-opts" }} 
