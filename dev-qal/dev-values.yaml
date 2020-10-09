@@ -19,11 +19,10 @@ app:
       secret: "NjhiOGMxYmItZTZhMC1hZWE2LWIyZTYtODcwNzgwMTY4YzY5"
   event-tracking-service:
     version: "snapshot-201008-181403-0997"
-    java-opts: " -Dapp.env=dev"
-    prefix-url: "/event-tracking-service"
-    port: 8080
   fcp-publisher:
     version: "snapshot-201008-181206-0266"
     secret:
       role: "NzUxNDM1MjEtNDk2Mi1mZmVjLWY4MzgtYTNmMjA1YWQzM2Qw"
       secret: "MmUxNjAxNTQtYzU4Zi0zODkzLTkzYjItNDJmNWY5ZWU3OTM5"
+    prefix-url: "/fcp-publisher"
+    port: 8080
