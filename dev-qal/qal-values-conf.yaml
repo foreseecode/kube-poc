@@ -1,0 +1,15 @@
+---
+replicaCount: 1
+
+global:
+  env:
+    NAME: "qal"
+    VAULT_URI: "http://dev-vault.aws.foreseeresults.com:8200"
+    K8S_INGRESS_LB: "qal.poc.xiao.us.to"
+    DEFAULT_JAVA_OPT: "-Dspring.profiles.active=qa,aws -DKAFKA_ADDRESS=dev-kafka-cxsuite.foresee.com:9092 -DKAFKA_TRACE_LOGGING_TOPIC=qal-core-platform-logging -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=10101 -Dplatform-security-redis.hostName=auth-tokens-qa.lbpwvt.ng.0001.use1.cache.amazonaws.com -Dplatform-security-redis.port=6379 -Deureka.client.eurekaServerDNSName=qa.aws.foreseeresults.com -Deureka.client.healthcheck.enabled=true -DMETRICS_TOPIC=qal-core-platform-metrics -DHYSTRIX_STREAM_TOPIC=qal-core-platform-circuit-breaker -DPLATFORM_CONFIG_SERVER_URI=http://dev-config-server.foresee.com/platform-config-server -DHYSTRIX_STREAM_ZK_NODES=dev-zookeeper-cxsuite1.foresee.com,dev-zookeeper-cxsuite2.foresee.com,dev-zookeeper-cxsuite3.foresee.com -Dlogging.config=classpath:log4j2-aws.xml -Dspring.cloud.config.username=config-server-user -Dspring.cloud.config.password=secret -Deureka.instance.lease-renewal-interval-in-seconds=30 -Deureka.instance.lease-expiration-duration-in-seconds=90 -DAsyncLoggerConfig.RingBufferSize=1024"
+    APP_PORT: 8080
+
+# version has to be first element and space matters for version_replace.sh to work
+app:
+  settings-service:
+    java-opts: "-Deureka.environment=qa -DAPPLICATION_NAME=settings-service"
