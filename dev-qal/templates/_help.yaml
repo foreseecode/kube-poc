@@ -31,13 +31,13 @@ spec:
             secretKeyRef:
               name: {{ $key | quote }}
               key: role
-          optional: true
+              optional: true
         - name: VAULT_SECRET_ID
           valueFrom:
             secretKeyRef:
               name: {{ $key | quote }}
               key: secret
-          optional: true
+              optional: true
         - name: K8S_INGRESS_LB
           value: {{ $appEnv.K8S_INGRESS_LB }}
         - name: DEFAULT_JAVA_OPTS
@@ -47,7 +47,7 @@ spec:
             configMapKeyRef:
               name: {{ $key | quote }}
               key: java-opts
-          optional: true
+              optional: true
         ports:
         - containerPort: {{ $appPort }} 
           name: http
