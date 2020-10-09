@@ -3,4 +3,4 @@ app:
   settings-service:
     version: "snapshot-201008-160838-0376"
   event-tracking-service:
-    version: "snapshot-201008-181403-0997"
+    version: "snapshot-201009-132347-0957"
