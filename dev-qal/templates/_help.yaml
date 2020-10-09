@@ -31,11 +31,13 @@ spec:
             secretKeyRef:
               name: {{ $key | quote }}
               key: role
+          optional: true
         - name: VAULT_SECRET_ID
           valueFrom:
             secretKeyRef:
               name: {{ $key | quote }}
               key: secret
+          optional: true
         - name: K8S_INGRESS_LB
           value: {{ $appEnv.K8S_INGRESS_LB }}
         - name: DEFAULT_JAVA_OPTS
@@ -45,6 +47,7 @@ spec:
             configMapKeyRef:
               name: {{ $key | quote }}
               key: java-opts
+          optional: true
         ports:
         - containerPort: {{ $appPort }} 
           name: http
@@ -63,6 +66,8 @@ spec:
   selector:
     app.foresee/name: {{ $key | quote }}
 ---
+{{- if .secret }}
+{{- if and .secret.role .secret.secret }} 
 apiVersion: v1
 kind: Secret
 metadata:
@@ -72,6 +77,11 @@ data:
   role: {{ .secret.role }}
   secret: {{ .secret.secret }}
 ---
+{{- end }}
+{{- end }}
+
+---
+{{- if index . "java-opts" }} 
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -79,6 +89,7 @@ metadata:
 data:
   java-opts: {{ index . "java-opts" | quote }}
 ---
+{{- end }}
 {{- end }}
 {{- end }}
 
