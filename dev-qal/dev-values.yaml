@@ -18,7 +18,7 @@ app:
       role: "NTEwYTJjZTctNDU1OC1lNDk2LTBiOTMtNWY5YzFlOGY4OTZm"
       secret: "NjhiOGMxYmItZTZhMC1hZWE2LWIyZTYtODcwNzgwMTY4YzY5"
   event-tracking-service:
-    version: "snapshot-201009-203422-0503"
+    version: "snapshot-201013-164107-0929"
   fcp-publisher:
     version: "snapshot-201008-181206-0266"
     secret:
