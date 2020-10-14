@@ -31,7 +31,7 @@ spec:
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: /actuator/prometheus
-        prometheus.io/port:  "8080"      
+        prometheus.io/port:  "8080"
     spec:
       containers:
       - name: {{ $appName | quote }}
@@ -72,9 +72,9 @@ kind: Service
 metadata:
   name: {{ $appName | quote }}
   annotations:
-    prometheus.io/scrape: 'true'
-    prometheus.io/path: '/actuator/prometheus'
-    prometheus.io/port:  '8080'
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/actuator/prometheus"
+    prometheus.io/port:  "8080"
 spec:
   ports:
   - name: http
