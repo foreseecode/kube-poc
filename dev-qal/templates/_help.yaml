@@ -7,6 +7,7 @@
 {{- $confPath := include "app.configPath" (dict "appName" $appName "env" $.Values.appEnv "Files" $.Files) }}
 {{- $appConf := ternary ($.Files.Get $confPath | fromYaml) (dict) (gt (len $confPath) 1) }}
 {{- $appPort := default $globalConf.env.APP_PORT $appConf.PORT }}
+{{- $actuatorPath := default $appConf.ACTUATOR_PREFIX $appConf.INGRESS_PREFIX | default (print "/" $appName) }}
 
 {{- if $bytes }}
 apiVersion: apps/v1
@@ -15,10 +16,6 @@ metadata:
   labels:
     app.foresee/name: {{ $appName | quote }}
   name: {{ $appName | quote }}
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/path: /actuator/prometheus
-    prometheus.io/port:  "8080"
 spec:
   replicas: {{ $globalConf.replicaCount }}
   selector:
@@ -30,7 +27,7 @@ spec:
         app.foresee/name: {{ $appName | quote }}
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/path: /actuator/prometheus
+        prometheus.io/path: {{$actuatorPath }}/actuator/prometheus
         prometheus.io/port:  "8080"
     spec:
       containers:
