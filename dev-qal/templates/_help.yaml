@@ -16,9 +16,9 @@ metadata:
     app.foresee/name: {{ $appName | quote }}
   name: {{ $appName | quote }}
   annotations:
-    prometheus.io/scrape: 'true'
-    prometheus.io/path: '/actuator/prometheus'
-    prometheus.io/port:  '8080'
+    prometheus.io/scrape: "true"
+    prometheus.io/path: /actuator/prometheus
+    prometheus.io/port:  "8080"
 spec:
   replicas: {{ $globalConf.replicaCount }}
   selector:
@@ -29,9 +29,9 @@ spec:
       labels:
         app.foresee/name: {{ $appName | quote }}
       annotations:
-        prometheus.io/scrape: 'true'
-        prometheus.io/path: '/actuator/prometheus'
-        prometheus.io/port:  '8080'        
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /actuator/prometheus
+        prometheus.io/port:  "8080"      
     spec:
       containers:
       - name: {{ $appName | quote }}
