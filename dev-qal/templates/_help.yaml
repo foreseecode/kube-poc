@@ -1,61 +1,66 @@
 {{- define "app.deployment" }}
-{{ $appEnv := .Values.global.env }}
-{{ $replicas := .Values.replicaCount }}
-{{- range $key, $value := .Values.app }}
-{{ $appPort := index . "port" | default $appEnv.APP_PORT | default 8080}}
-{{- if .version }} {{- /* only have deployment section if versions exists */ -}}
+
+{{- $globalConf := ($.Files.Get (print ($.Values.appEnv) "/env.yaml") | fromYaml ) }}
+{{- /* all apps for deployment */}}
+{{- range $path, $bytes  := $.Files.Glob (print $.Values.appEnv "/*/version.conf") }}
+{{- $appName := include "app.appName" (dict "path" $path "env" $.Values.appEnv) }}
+{{- $confPath := include "app.configPath" (dict "appName" $appName "env" $.Values.appEnv "Files" $.Files) }}
+{{- $appConf := ternary ($.Files.Get $confPath | fromYaml) (dict) (gt (len $confPath) 1) }}
+{{- $appPort := default $globalConf.env.APP_PORT $appConf.PORT }}
+
+{{- if $bytes }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app.foresee/name: {{ $key | quote }}
-  name: {{ $key | quote }}
+    app.foresee/name: {{ $appName | quote }}
+  name: {{ $appName | quote }}
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/path: /actuator/prometheus
     prometheus.io/port:  "8080"
 spec:
-  replicas: {{ $replicas }}
+  replicas: {{ $globalConf.replicaCount }}
   selector:
     matchLabels:
-      app.foresee/name: {{ $key | quote }}
+      app.foresee/name: {{ $appName | quote }}
   template:
     metadata:
       labels:
-        app.foresee/name: {{ $key | quote }}
+        app.foresee/name: {{ $appName | quote }}
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: /actuator/prometheus
-        prometheus.io/port:  "8080"      
+        prometheus.io/port:  "8080"
     spec:
       containers:
-      - name: {{ $key | quote }}
-        image: fsr-artifactory.aws.foreseeresults.com:9001/{{ $key }}:{{ .version }}
+      - name: {{ $appName | quote }}
+        image: fsr-artifactory.aws.foreseeresults.com:9001/{{ $appName }}:{{ $.Files.Get $path }}
         imagePullPolicy: IfNotPresent
         env:
         - name: VAULT_URI
-          value: {{ $appEnv.VAULT_URI }}
+          value: {{ $globalConf.env.VAULT_URI }}
         - name: VAULT_ROLE_ID
           valueFrom:
             secretKeyRef:
-              name: {{ $key | quote }}
-              key: role
+              name: {{ $appName | quote }}
+              key: VAULT_ROLE_ID
               optional: true
         - name: VAULT_SECRET_ID
           valueFrom:
             secretKeyRef:
-              name: {{ $key | quote }}
-              key: secret
+              name: {{ $appName | quote }}
+              key: VAULT_SECRET_ID
               optional: true
         - name: K8S_INGRESS_LB
-          value: {{ $appEnv.K8S_INGRESS_LB }}
+          value: {{ $globalConf.env.K8S_INGRESS_LB }}
         - name: DEFAULT_JAVA_OPTS
-          value: {{ $appEnv.DEFAULT_JAVA_OPT }}
+          value: {{ $globalConf.env.DEFAULT_JAVA_OPT }}
         - name: JAVA_OPTS
           valueFrom:
             configMapKeyRef:
-              name: {{ $key | quote }}
-              key: java-opts
+              name: {{ $appName | quote }}
+              key: JAVA_OPTS
               optional: true
         ports:
         - containerPort: {{ $appPort }} 
@@ -65,7 +70,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ $key | quote }}
+  name: {{ $appName | quote }}
 spec:
   ports:
   - name: http
@@ -73,37 +78,12 @@ spec:
     protocol: TCP
     targetPort: {{ $appPort }}
   selector:
-    app.foresee/name: {{ $key | quote }}
+    app.foresee/name: {{ $appName | quote }}
 
 ---
-{{- end }} {{- /* if .version */ -}}
-{{- if .secret }}
-{{- if and .secret.role .secret.secret }} 
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ $key | quote }}
-type: Opaque
-data:
-  role: {{ .secret.role }}
-  secret: {{ .secret.secret }}
----
 {{- end }}
-{{- end }} {{- /* if .secret */ -}}
-
----
-{{- if index . "java-opts" }} 
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ $key }}
-data:
-  java-opts: {{ index . "java-opts" | quote }}
----
-{{- end }}
-{{- end }}
-{{- end }}
-
+{{- end }} {{/* end of range */}}
+{{- end }} {{/* end of deployment */}}
 
 {{- define "app.ingress" }}
 ---
@@ -113,17 +93,70 @@ metadata:
   name: app-ingress
 spec:
   rules:
-  - host: {{.Values.global.env.K8S_INGRESS_LB | quote }}
+{{- $globalConf := ($.Files.Get (print ($.Values.appEnv) "/env.yaml") | fromYaml ) }}
+  - host: {{$globalConf.env.K8S_INGRESS_LB | quote }}
     http:
       paths:
-      {{ $APP_PORT := .Values.global.env.APP_PORT | default 8080 }}
-      {{- range $key, $value := .Values.app }}
-      {{- $default_path := print "/" $key }}
-      - path: {{ index . "prefix-url" | default $default_path | quote }}
+{{- range $path, $bytes  := $.Files.Glob (print $.Values.appEnv "/*/version.conf") }}
+{{- $appName := include "app.appName" (dict "path" $path "env" $.Values.appEnv) }}
+{{- $confPath := include "app.configPath" (dict "appName" $appName "env" $.Values.appEnv "Files" $.Files) }}
+{{- $appConf := ternary ($.Files.Get $confPath | fromYaml) (dict) (gt (len $confPath) 1) }}
+{{- if $bytes }}	  
+      - path: {{ default (print "/" $appName) $appConf.INGRESS_PREFIX | quote }}
         pathType: Prefix
         backend:
-          serviceName: {{ $key | quote }}
-          servicePort: {{ index . "port" | default $APP_PORT }}
-      {{- end }}
+          serviceName: {{ $appName | quote }}
+          servicePort: {{ default $globalConf.env.APP_PORT $appConf.PORT }}
+{{- end }} {{/* end if */}}
+{{- end }}
 ---
+{{- end }} {{/* end of ingress */}}
+
+{{- define "app.secret" }}
+{{- range $path, $bytes  := $.Files.Glob (print $.Values.appEnv "/*/secret.yaml") }}
+{{- $appName := include "app.appName" (dict "path" $path "env" $.Values.appEnv) }}
+{{- if $bytes }}
+{{- $appSecret := $.Files.Get (print $.Values.appEnv "/" $appName "/secret.yaml") | fromYaml }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ $appName | quote }}
+type: Opaque
+data:
+  {{- range $key, $val  := $appSecret }}
+  {{ $key }}: {{ $val | b64enc }}
+  {{- end }}
+---
+{{- end }} {{- /* if */}}
+{{- end }} {{- /* range */}}
+{{- end }}
+
+{{- define "app.config" }}
+{{- $globalConf := ($.Files.Get (print ($.Values.appEnv) "/env.yaml") | fromYaml ) }}
+{{- range $path, $bytes  := $.Files.Glob (print $.Values.appEnv "/*/app.yaml") }}
+{{- $appName := include "app.appName" (dict "path" $path "env" $.Values.appEnv) }}
+{{- if $bytes }}
+{{- $appConf := $.Files.Get $path | fromYaml }}
+{{- if $appConf.JAVA_OPTS }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $appName }}
+data:
+  JAVA_OPTS: {{ $appConf.JAVA_OPTS }}
+---
+{{- end }}
+{{- end }} {{- /* if */}}
+{{- end }} {{- /* range */}}
+{{- end }}
+
+{{- define "app.appName" }}
+{{- dir .path | substr (int (add1 (len .env))) (len (dir .path)) }}
+{{- end }}
+
+{{- define "app.configPath" }}
+{{- $confPath := (print .env "/" .appName "/app.yaml") }}
+{{- if .Files.Glob $confPath }}
+{{- $confPath }}
+{{- end }}
 {{- end }}
