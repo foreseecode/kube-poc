@@ -1,0 +1,5 @@
+sidecar:
+  imagePullPolicy: IfNotPresent
+  datasources:
+    enabled: true
+    label: grafana_datasource
