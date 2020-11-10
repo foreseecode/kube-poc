@@ -1,1 +1,1 @@
-{{- template "app.ingress" . }}
+{{/*- template "app.ingress" . */}}
