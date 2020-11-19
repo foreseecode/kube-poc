@@ -1,1 +1,0 @@
-JAVA_OPTS: "-Deureka.environment=dev -DAPPLICATION_NAME=settings-service"
