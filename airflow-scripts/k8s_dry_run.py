@@ -21,6 +21,7 @@ with DAG(
     k = KubernetesPodOperator(
         name="hello-dry-run",
         image="debian",
+        namespace='airflow',
         cmds=["bash", "-cx"],
         arguments=["echo", "10"],
         labels={"foo": "bar"},
