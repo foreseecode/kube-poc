@@ -8,12 +8,12 @@ from airflow.operators.bash_operator import BashOperator
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
-    'start_date': datetime.utcnow(),
     'email': ['airflow@example.com'],
     'email_on_failure': False,
     'email_on_retry': False,
     'retries': 1,
-    'retry_delay': timedelta(minutes=5)
+    'retry_delay': timedelta(minutes=5),
+    'start_date': datetime(year=2022, month=5, day=19)
 }
 
 dag = DAG(
