@@ -22,7 +22,7 @@ dag = DAG(
 start = DummyOperator(task_id='run_this_first', dag=dag)
 
 write_xcom = KubernetesPodOperator(
-        namespace='default',
+        namespace='airflow',
         image='alpine',
         cmds=["sh", "-c", "mkdir -p /airflow/xcom/;echo '[1,2,3,4]' > /airflow/xcom/return.json"],
         name="write-xcom",
@@ -31,11 +31,13 @@ write_xcom = KubernetesPodOperator(
         in_cluster=True,
         task_id="write-xcom",
         get_logs=True,
+        dag=dag
     )
 
 pod_task_xcom_result = BashOperator(
         bash_command="echo \"{{ task_instance.xcom_pull('write-xcom')[0] }}\"",
         task_id="pod_task_xcom_result",
+        dag=dag
     )
 
 start >> write_xcom >> pod_task_xcom_result
