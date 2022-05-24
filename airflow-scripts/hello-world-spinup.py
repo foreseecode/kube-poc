@@ -75,6 +75,9 @@ def create_service():
         pprint(api_response)
     except ApiException as e:
         print("Exception when calling CoreV1Api->create_namespaced_endpoints: %s\n" % e)
+        
+def hello_world():
+    print("Hello World")
 
 dag = DAG(
     'hello-world-spin-up', default_args=default_args, schedule_interval='@daily')
@@ -103,7 +106,7 @@ create_service = PythonOperator(
 
 create_configMap = PythonOperator(
         task_id='create_configMap',
-        python_callable=create_configMap,
+        python_callable=hello_world,
         dag=dag
     )
 
