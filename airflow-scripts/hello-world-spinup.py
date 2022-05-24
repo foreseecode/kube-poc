@@ -6,7 +6,7 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python import PythonOperator
 import kubernetes
-from kubernetes import client,watch
+from kubernetes import client,watch,config
 from kubernetes.client.rest import ApiException
 from pprint import pprint
 
@@ -20,6 +20,7 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
     'start_date': datetime(year=2022, month=5, day=23)
 }
+
 
 test_labels = {
     'app.foresee/application':'hello-world',
@@ -54,6 +55,7 @@ namespace = 'airflow'
 
 
 def create_configMap():
+    config.load_kube_config()
     api_instance = kubernetes.client.CoreV1Api()
     cmap = client.V1ConfigMap()
     cmap.metadata = client.V1ObjectMeta(name="special-config")
