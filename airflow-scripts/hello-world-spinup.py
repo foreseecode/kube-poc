@@ -44,8 +44,8 @@ service_manifest = {
         "ports": [
             {
                 "protocol": "TCP",
-                "port": 8080,
-                "targetPort": 8080
+                "port": 5000,
+                "targetPort": 5000
             }
         ]
     }
@@ -68,7 +68,7 @@ start = DummyOperator(task_id='run_this_first', dag=dag)
 
 spin_up_image = KubernetesPodOperator(
         namespace='airflow',
-        image='fsr-artifactory.aws.foreseeresults.com:9001/hello-world-service:snapshot-210921-192304-0177',
+        image='digitalocean/flask-helloworld',
         name="spin_up_image",
         do_xcom_push=True,
         is_delete_operator_pod=False,
