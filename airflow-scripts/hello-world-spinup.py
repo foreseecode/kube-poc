@@ -19,7 +19,7 @@ default_args = {
     'email_on_retry': False,
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
-    'start_date': datetime(year=2022, month=5, day=24)
+    'start_date': datetime(year=2022, month=5, day=23)
 }
 
 test_lables = {
