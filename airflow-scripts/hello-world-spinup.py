@@ -10,7 +10,6 @@ from kubernetes import client,watch
 from kubernetes.client.rest import ApiException
 from pprint import pprint
 
-
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
