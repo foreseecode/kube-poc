@@ -51,12 +51,28 @@ service_manifest = {
     }
 }
 
-def create_service():
+namespace = 'airflow'
+
+
+def create_configMap():
     api_instance = kubernetes.client.CoreV1Api()
-    service_ns = 'airflow'
+    cmap = client.V1ConfigMap()
+    cmap.metadata = client.V1ObjectMeta(name="special-config")
+    cmap.data = {}
+    cmap.data["special.how"] = "very"
+    cmap.data["special.type"] = "charm"
 
     try:
-        api_response = api_instance.create_namespaced_service(service_ns, service_manifest, pretty='true')
+        api_response = api_instance.create_namespaced_config_map(namespace, body=cmap)
+        pprint(api_response)
+    except ApiException as e:
+        print("Exception when calling CoreV1Api->create_namespaced_config_map: %s\n" % e)
+
+def create_service():
+    api_instance = kubernetes.client.CoreV1Api()
+
+    try:
+        api_response = api_instance.create_namespaced_service(namespace, service_manifest, pretty='true')
         pprint(api_response)
     except ApiException as e:
         print("Exception when calling CoreV1Api->create_namespaced_endpoints: %s\n" % e)
@@ -86,4 +102,10 @@ create_service = PythonOperator(
         dag=dag
     )
 
-start >> [spin_up_image , create_service]
+create_configMap = PythonOperator(
+        task_id='create_configMap',
+        python_callable=create_configMap,
+        dag=dag
+    )
+
+start >> create_configMap
