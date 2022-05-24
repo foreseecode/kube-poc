@@ -81,7 +81,7 @@ spin_up_image = KubernetesPodOperator(
     )
 
 create_service = PythonOperator(
-        task_id='transform_users',
+        task_id='create_service',
         python_callable=create_service
     )
 
