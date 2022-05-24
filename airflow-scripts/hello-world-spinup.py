@@ -86,4 +86,4 @@ create_service = PythonOperator(
         dag=dag
     )
 
-start >> spin_up_image >> create_service
+start >> [spin_up_image , create_service]
