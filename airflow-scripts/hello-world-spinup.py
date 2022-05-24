@@ -84,25 +84,25 @@ dag = DAG(
 
 start = DummyOperator(task_id='run_this_first', dag=dag)
 
-spin_up_image = KubernetesPodOperator(
-        namespace='airflow',
-        image='digitalocean/flask-helloworld',
-        name="spin_up_image",
-        do_xcom_push=False,
-        is_delete_operator_pod=False,
-        in_cluster=True,
-        task_id="spin_up_image",
-        get_logs=True,
-        labels=test_labels,
-        annotations=annotations,
-        dag=dag
-    )
+# spin_up_image = KubernetesPodOperator(
+#         namespace='airflow',
+#         image='digitalocean/flask-helloworld',
+#         name="spin_up_image",
+#         do_xcom_push=False,
+#         is_delete_operator_pod=False,
+#         in_cluster=True,
+#         task_id="spin_up_image",
+#         get_logs=True,
+#         labels=test_labels,
+#         annotations=annotations,
+#         dag=dag
+#     )
 
-create_service = PythonOperator(
-        task_id='create_service',
-        python_callable=create_service,
-        dag=dag
-    )
+# create_service = PythonOperator(
+#         task_id='create_service',
+#         python_callable=create_service,
+#         dag=dag
+#     )
 
 create_configMap = PythonOperator(
         task_id='create_configMap',
