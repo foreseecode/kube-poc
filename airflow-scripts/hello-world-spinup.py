@@ -7,7 +7,7 @@ from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python import PythonOperator
 import kubernetes
 from kubernetes import client,watch
-from kubernetes.client.exceptions import ApiException
+from kubernetes.client.rest import ApiException
 from pprint import pprint
 
 
