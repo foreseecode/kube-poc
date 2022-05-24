@@ -22,7 +22,7 @@ default_args = {
     'start_date': datetime(year=2022, month=5, day=23)
 }
 
-test_lables = {
+test_labels = {
     'app.foresee/application':'hello-world',
     'test' : 'label'
 }
@@ -75,7 +75,7 @@ spin_up_image = KubernetesPodOperator(
         in_cluster=True,
         task_id="spin_up_image",
         get_logs=True,
-        labels=test_lables,
+        labels=test_labels,
         annotations=annotations,
         dag=dag
     )
