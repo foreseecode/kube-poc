@@ -1294,7 +1294,7 @@ pgbouncer:
 
 # Configuration for the redis provisioned by the chart
 redis:
-  enabled: true
+  enabled: false
   terminationGracePeriodSeconds: 600
 
   # Create ServiceAccount
@@ -1340,6 +1340,13 @@ redis:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+
+externalRedis:
+  host: "dev-services-cache.lbpwvt.0001.use1.cache.amazonaws.com"
+  port: 6379
+
+  ## the redis database-number that airflow will use
+  databaseNumber: 6
 
 # Auth secret for a private registry
 # This is used if pulling airflow images from a private registry
@@ -1430,10 +1437,34 @@ cleanup:
 
 # Configuration for postgresql subchart
 # Not recommended for production
+## to use the external db, the embedded one must be disabled
 postgresql:
-  enabled: true
-  postgresqlPassword: postgres
-  postgresqlUsername: postgres
+  enabled: false
+  # postgresqlPassword: postgres
+  # postgresqlUsername: postgres
+externalDatabase:
+  type: postgres
+  host: argoworkflows.cick4ue9wa5u.us-east-1.rds.amazonaws.com
+  port: 5432
+  ## the schema which will contain the airflow tables
+  database: airflow
+
+  ## (username - option 1) a plain-text helm value
+  user: postgres
+
+  ## (username - option 2) a Kubernetes secret in your airflow namespace
+  #userSecret: "airflow-cluster1-database-credentials"
+  #userSecretKey: "username"
+
+  ## (password - option 1) a plain-text helm value
+  password: postgres
+
+  ## (password - option 2) a Kubernetes secret in your airflow namespace
+  #passwordSecret: "airflow-cluster1-database-credentials"
+  #passwordSecretKey: "password"
+
+  ## use this for any extra connection-string settings, e.g. ?sslmode=disable
+  properties: ""
 
 # Config settings to go into the mounted airflow.cfg
 #
