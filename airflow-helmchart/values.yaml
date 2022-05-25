@@ -1294,7 +1294,7 @@ pgbouncer:
 
 # Configuration for the redis provisioned by the chart
 redis:
-  enabled: false
+  enabled: true
   terminationGracePeriodSeconds: 600
 
   # Create ServiceAccount
@@ -1341,12 +1341,12 @@ redis:
   affinity: {}
   tolerations: []
 
-externalRedis:
-  host: "dev-services-cache.lbpwvt.0001.use1.cache.amazonaws.com"
-  port: 6379
+# externalRedis:
+#   host: "dev-services-cache.lbpwvt.0001.use1.cache.amazonaws.com"
+#   port: 6379
 
-  ## the redis database-number that airflow will use
-  databaseNumber: 6
+#   ## the redis database-number that airflow will use
+#   databaseNumber: 6
 
 # Auth secret for a private registry
 # This is used if pulling airflow images from a private registry
