@@ -108,7 +108,7 @@ start = DummyOperator(task_id='run_this_first', dag=dag)
 
 create_configMap = PythonOperator(
         task_id='create_configMap',
-        python_callable=create_configMap,
+        python_callable=hello_world,
         dag=dag
     )
 
